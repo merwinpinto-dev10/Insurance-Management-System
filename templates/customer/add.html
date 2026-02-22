@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Add Customer - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>Add New Customer
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('customer.add') }}">
+                        <!-- Customer Name -->
+                        <div class="mb-3">
+                            <label for="cus_name" class="form-label">
+                                Customer Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="cus_name" 
+                                   name="cus_name"
+                                   value="{{ cus_name or '' }}"
+                                   placeholder="Enter full name" 
+                                   required>
+                        </div>
+                        
+                        <!-- Mobile Number -->
+                        <div class="mb-3">
+                            <label for="cus_mobile" class="form-label">
+                                Mobile Number <span class="text-danger">*</span>
+                            </label>
+                            <input type="tel" 
+                                   class="form-control" 
+                                   id="cus_mobile" 
+                                   name="cus_mobile"
+                                   value="{{ cus_mobile or '' }}"
+                                   placeholder="10 digit mobile number"
+                                   pattern="[0-9]{10}"
+                                   maxlength="10"
+                                   required>
+                            <small class="text-muted">Enter 10 digit mobile number</small>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="cus_email" class="form-label">
+                                Email Address
+                            </label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="cus_email" 
+                                   name="cus_email"
+                                   value="{{ cus_email or '' }}"
+                                   placeholder="customer@example.com">
+                            <small class="text-muted">Optional</small>
+                        </div>
+                        
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label for="cus_add" class="form-label">
+                                Address
+                            </label>
+                            <textarea class="form-control" 
+                                      id="cus_add" 
+                                      name="cus_add" 
+                                      rows="3"
+                                      placeholder="Enter full address">{{ cus_add or '' }}</textarea>
+                            <small class="text-muted">Optional</small>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Customer
+                            </button>
+                            <a href="{{ url_for('customer.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

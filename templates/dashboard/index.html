@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Insurance Management System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </h1>
+
+            <!-- Welcome Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Welcome, {{ session.user_name or 'User' }}!
+                    </h5>
+                    <p class="card-text">
+                        <i class="fas fa-user-tag me-2"></i>Role: <strong>{{ session.role_name or 'Unknown' }}</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="{{ url_for('customer.index') }}" class="text-decoration-none">
+                        <div class="card text-white bg-primary mb-3 stat-card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-users me-2"></i>Customers
+                                </h5>
+                                <h2>{{ total_customers }}</h2>
+                                <p class="card-text">Total Customers</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-3">
+                    <a href="{{ url_for('insurance.index') }}" class="text-decoration-none">
+                        <div class="card text-white bg-success mb-3 stat-card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-shield-alt me-2"></i>Insurance
+                                </h5>
+                                <h2>{{ active_policies }}</h2>
+                                <p class="card-text">Active Policies</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-3">
+                    <a href="{{ url_for('bill.index') }}" class="text-decoration-none">
+                        <div class="card text-white bg-warning mb-3 stat-card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-file-invoice me-2"></i>Bills
+                                </h5>
+                                <h2>{{ pending_bills }}</h2>
+                                <p class="card-text">Pending Bills</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-3">
+                    <a href="{{ url_for('payment.index') }}" class="text-decoration-none">
+                        <div class="card text-white bg-info mb-3 stat-card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Payments
+                                </h5>
+                                <h2>₹{{ "%.2f"|format(total_revenue) }}</h2>
+                                <p class="card-text">Total Payments Collected</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('customer.add') }}" class="btn btn-outline-primary btn-lg w-100">
+                                <i class="fas fa-user-plus fa-2x mb-2 d-block"></i>
+                                Add Customer
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('insurance.add') }}" class="btn btn-outline-success btn-lg w-100">
+                                <i class="fas fa-plus-circle fa-2x mb-2 d-block"></i>
+                                New Insurance
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('bill.add') }}" class="btn btn-outline-warning btn-lg w-100">
+                                <i class="fas fa-file-invoice fa-2x mb-2 d-block"></i>
+                                Create Bill
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('payment.add') }}" class="btn btn-outline-info btn-lg w-100">
+                                <i class="fas fa-hand-holding-usd fa-2x mb-2 d-block"></i>
+                                Record Payment
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

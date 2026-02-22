@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Add Insurance - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus me-2"></i>Add New Insurance Policy
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('insurance.add') }}">
+                        <!-- Customer Selection -->
+                        <div class="mb-3">
+                            <label for="ins_cus_id" class="form-label">
+                                Customer <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="ins_cus_id" name="ins_cus_id" required>
+                                <option value="">-- Select Customer --</option>
+                                {% for customer in customers %}
+                                <option value="{{ customer.cus_id }}">
+                                    {{ customer.cus_name }} ({{ customer.cus_mobile }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Insurance Type -->
+                        <div class="mb-3">
+                            <label for="ins_type" class="form-label">
+                                Insurance Type <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="ins_type" name="ins_type" required>
+                                <option value="">-- Select Type --</option>
+                                <option value="Life Insurance">Life Insurance</option>
+                                <option value="Health Insurance">Health Insurance</option>
+                                <option value="Vehicle Insurance">Vehicle Insurance</option>
+                                <option value="Home Insurance">Home Insurance</option>
+                                <option value="Travel Insurance">Travel Insurance</option>
+                                <option value="Business Insurance">Business Insurance</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Policy Number -->
+                        <div class="mb-3">
+                            <label for="ins_num" class="form-label">
+                                Policy Number <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="ins_num" 
+                                   name="ins_num"
+                                   placeholder="e.g., INS-2024-0001"
+                                   required>
+                        </div>
+                        
+                        <!-- Insurance Amount -->
+                        <div class="mb-3">
+                            <label for="ins_amt" class="form-label">
+                                Insurance Amount (₹) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="ins_amt" 
+                                   name="ins_amt"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="0.00"
+                                   required>
+                        </div>
+                        
+                        <!-- Issue Date -->
+                        <div class="mb-3">
+                            <label for="ins_date" class="form-label">
+                                Issue Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="ins_date" 
+                                   name="ins_date"
+                                   required>
+                        </div>
+                        
+                        <!-- Expiry Date -->
+                        <div class="mb-3">
+                            <label for="expiry_date" class="form-label">
+                                Expiry Date
+                            </label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="expiry_date" 
+                                   name="expiry_date">
+                            <small class="text-muted">Optional</small>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Save Insurance Policy
+                            </button>
+                            <a href="{{ url_for('insurance.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Bill - Insurance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Bill</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('bill.edit', id=bill.bill_id) }}">
+                        <!-- Customer Selection -->
+                        <div class="mb-3">
+                            <label for="bill_cus_id" class="form-label">
+                                Customer <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="bill_cus_id" name="bill_cus_id" required>
+                                {% for customer in customers %}
+                                <option value="{{ customer.cus_id }}" {% if customer.cus_id == bill.bill_cus_id %}selected{% endif %}>
+                                    {{ customer.cus_name }} ({{ customer.cus_mobile }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Bill Number -->
+                        <div class="mb-3">
+                            <label for="bill_num" class="form-label">
+                                Bill Number <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="bill_num" 
+                                   name="bill_num"
+                                   value="{{ bill.bill_num }}"
+                                   required>
+                        </div>
+                        
+                        <!-- Bill Amount -->
+                        <div class="mb-3">
+                            <label for="bill_amount" class="form-label">
+                                Bill Amount (₹) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="bill_amount" 
+                                   name="bill_amount"
+                                   step="0.01"
+                                   value="{{ bill.bill_amount }}"
+                                   required>
+                        </div>
+                        
+                        <!-- Bill Date -->
+                        <div class="mb-3">
+                            <label for="bill_date" class="form-label">
+                                Bill Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="bill_date" 
+                                   name="bill_date"
+                                   value="{{ bill.bill_date.strftime('%Y-%m-%d') if bill.bill_date else '' }}"
+                                   required>
+                        </div>
+                        
+                        <!-- Due Date -->
+                        <div class="mb-3">
+                            <label for="due_date" class="form-label">
+                                Due Date
+                            </label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="due_date" 
+                                   name="due_date"
+                                   value="{{ bill.due_date.strftime('%Y-%m-%d') if bill.due_date else '' }}">
+                        </div>
+                        
+                        <!-- Status -->
+                        <div class="mb-3">
+                            <label for="bill_status" class="form-label">
+                                Bill Status
+                            </label>
+                            <select class="form-select" id="bill_status" name="bill_status">
+                                <option value="Pending" {% if bill.bill_status == 'Pending' %}selected{% endif %}>Pending</option>
+                                <option value="Paid" {% if bill.bill_status == 'Paid' %}selected{% endif %}>Paid</option>
+                                <option value="Overdue" {% if bill.bill_status == 'Overdue' %}selected{% endif %}>Overdue</option>
+                                <option value="Cancelled" {% if bill.bill_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-2"></i>Update Bill
+                            </button>
+                            <a href="{{ url_for('bill.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>
+                        <i class="fas fa-info-circle me-1"></i>
+                        Created: {{ bill.created_at.strftime('%Y-%m-%d %H:%M') if bill.created_at else 'N/A' }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

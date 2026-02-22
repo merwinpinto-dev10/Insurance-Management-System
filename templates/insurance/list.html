@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Insurance Management - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="fas fa-shield-alt me-2"></i>Insurance Management
+                </h1>
+                <a href="{{ url_for('insurance.add') }}" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i>Add New Insurance
+                </a>
+            </div>
+            
+            <!-- Search & Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('insurance.index') }}" class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" 
+                                   name="search" 
+                                   class="form-control" 
+                                   placeholder="Search by policy number, type, or customer name..."
+                                   value="{{ search_query or '' }}">
+                        </div>
+                        <div class="col-md-2">
+                            <select name="status" class="form-select">
+                                <option value="all">All Status</option>
+                                <option value="Active" {% if status_filter == 'Active' %}selected{% endif %}>Active</option>
+                                <option value="Expired" {% if status_filter == 'Expired' %}selected{% endif %}>Expired</option>
+                                <option value="Cancelled" {% if status_filter == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Insurance Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>All Insurance Policies ({{ insurances|length }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if insurances %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Policy Number</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Issue Date</th>
+                                    <th>Expiry Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for insurance in insurances %}
+                                <tr>
+                                    <td>{{ insurance.ins_id }}</td>
+                                    <td><strong>{{ insurance.ins_num }}</strong></td>
+                                    <td>{{ insurance.customer.cus_name if insurance.customer else 'N/A' }}</td>
+                                    <td>{{ insurance.ins_type }}</td>
+                                    <td>₹{{ "%.2f"|format(insurance.ins_amt) }}</td>
+                                    <td>{{ insurance.ins_date.strftime('%Y-%m-%d') if insurance.ins_date else 'N/A' }}</td>
+                                    <td>
+                                        {% if insurance.expiry_date %}
+                                            {{ insurance.expiry_date.strftime('%Y-%m-%d') }}
+                                            {% if insurance.is_expired() %}
+                                                <span class="badge bg-danger">Expired</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if insurance.ins_status == 'Active' %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% elif insurance.ins_status == 'Expired' %}
+                                            <span class="badge bg-danger">Expired</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ insurance.ins_status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('insurance.view', id=insurance.ins_id) }}" 
+                                               class="btn btn-sm btn-info" 
+                                               title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ url_for('insurance.edit', id=insurance.ins_id) }}" 
+                                               class="btn btn-sm btn-warning" 
+                                               title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="POST" 
+                                                  action="{{ url_for('insurance.delete', id=insurance.ins_id) }}" 
+                                                  style="display:inline;"
+                                                  onsubmit="return confirm('Are you sure you want to delete this insurance policy?');">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-shield-alt fa-4x text-muted mb-3"></i>
+                        <h4>No Insurance Policies Found</h4>
+                        <p class="text-muted">
+                            {% if search_query or status_filter != 'all' %}
+                                No insurance policies match your search criteria.
+                            {% else %}
+                                Start by adding your first insurance policy!
+                            {% endif %}
+                        </p>
+                        {% if not search_query %}
+                        <a href="{{ url_for('insurance.add') }}" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Add Insurance
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

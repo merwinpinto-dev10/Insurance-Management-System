@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Edit User - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <!-- Page Title -->
+            <div class="text-center mb-4">
+                <h2><i class="fas fa-user-edit me-2 text-warning"></i>Edit User Information</h2>
+                <p class="text-muted">Update user details and permissions</p>
+            </div>
+            
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>Edit User: {{ user.user_name if user else 'Unknown' }}
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('user.edit', id=user.user_id) }}">
+                        
+                        <!-- Personal Information -->
+                        <h6 class="text-warning mb-3">
+                            <i class="fas fa-id-card me-2"></i>Personal Information
+                        </h6>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="user_name" class="form-label fw-bold">
+                                    <i class="fas fa-user me-2"></i>Full Name 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="user_name" 
+                                       name="user_name"
+                                       value="{{ user.user_name if user else '' }}"
+                                       required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="user_mobile" class="form-label fw-bold">
+                                    <i class="fas fa-phone me-2"></i>Mobile Number 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="tel" 
+                                       class="form-control" 
+                                       id="user_mobile" 
+                                       name="user_mobile"
+                                       value="{{ user.user_mobile if user else '' }}"
+                                       pattern="[0-9]{10}"
+                                       maxlength="10"
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label for="user_email" class="form-label fw-bold">
+                                    <i class="fas fa-envelope me-2"></i>Email Address 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="email" 
+                                       class="form-control" 
+                                       id="user_email" 
+                                       name="user_email"
+                                       value="{{ user.user_email if user else '' }}"
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label for="user_address" class="form-label fw-bold">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Address
+                                </label>
+                                <textarea class="form-control" 
+                                          id="user_address" 
+                                          name="user_address" 
+                                          rows="3">{{ user.user_address if user and user.user_address else '' }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Login Information -->
+                        <h6 class="text-warning mb-3">
+                            <i class="fas fa-key me-2"></i>Login Information
+                        </h6>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="login_username" class="form-label fw-bold">
+                                    <i class="fas fa-user-circle me-2"></i>Username
+                                </label>
+                                <input type="text" 
+                                       class="form-control bg-light" 
+                                       value="{{ user.login.login_username if user and user.login else 'N/A' }}"
+                                       disabled
+                                       readonly>
+                                <small class="text-muted">Username cannot be changed</small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="login_role_id" class="form-label fw-bold">
+                                    <i class="fas fa-user-tag me-2"></i>User Role 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="login_role_id" name="login_role_id" required>
+                                    {% for role in roles %}
+                                    <option value="{{ role.role_id }}" 
+                                            {% if user and user.login and user.login.login_role_id == role.role_id %}selected{% endif %}>
+                                        {{ role.role_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="is_active" class="form-label fw-bold">
+                                    <i class="fas fa-toggle-on me-2"></i>Account Status
+                                </label>
+                                <select class="form-select" id="is_active" name="is_active">
+                                    <option value="1" {% if user and user.login and user.login.is_active %}selected{% endif %}>Active</option>
+                                    <option value="0" {% if user and user.login and not user.login.is_active %}selected{% endif %}>Inactive</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-clock me-2"></i>Last Login
+                                </label>
+                                <input type="text" 
+                                       class="form-control bg-light" 
+                                       value="{{ user.login.last_login.strftime('%Y-%m-%d %H:%M') if user and user.login and user.login.last_login else 'Never' }}"
+                                       disabled
+                                       readonly>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Password Reset Section -->
+                        <div class="alert alert-warning">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-lock me-2"></i>Password Management
+                            </h6>
+                            <p class="mb-2">
+                                To change the user's password, the user should use the "Change Password" option after logging in.
+                            </p>
+                            <p class="mb-0">
+                                <strong>Admin Note:</strong> If the user has forgotten their password, 
+                                you can reset it by setting a temporary password and asking them to change it on first login.
+                            </p>
+                        </div>
+                        
+                        <!-- Form Buttons -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-warning btn-lg">
+                                        <i class="fas fa-save me-2"></i>Update User Information
+                                    </button>
+                                    <a href="{{ url_for('user.index') }}" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-times me-2"></i>Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer text-muted">
+                    <small>
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Created:</strong> {{ user.created_at.strftime('%Y-%m-%d %H:%M') if user and user.created_at else 'N/A' }} |
+                        <strong>Last Updated:</strong> {{ user.updated_at.strftime('%Y-%m-%d %H:%M') if user and user.updated_at else 'N/A' }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

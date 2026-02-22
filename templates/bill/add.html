@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Add Bill - Insurance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Create New Bill</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('bill.add') }}">
+                        <!-- Customer Selection -->
+                        <div class="mb-3">
+                            <label for="bill_cus_id" class="form-label">
+                                Customer <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="bill_cus_id" name="bill_cus_id" required>
+                                <option value="">-- Select Customer --</option>
+                                {% for customer in customers %}
+                                <option value="{{ customer.cus_id }}">
+                                    {{ customer.cus_name }} ({{ customer.cus_mobile }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Select the customer for this bill</small>
+                        </div>
+                        
+                        <!-- Bill Number -->
+                        <div class="mb-3">
+                            <label for="bill_num" class="form-label">
+                                Bill Number <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="bill_num" 
+                                   name="bill_num"
+                                   placeholder="e.g., BILL-2024-0001"
+                                   required>
+                            <small class="text-muted">Unique bill identifier</small>
+                        </div>
+                        
+                        <!-- Bill Amount -->
+                        <div class="mb-3">
+                            <label for="bill_amount" class="form-label">
+                                Bill Amount (₹) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="bill_amount" 
+                                   name="bill_amount"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="0.00"
+                                   required>
+                        </div>
+                        
+                        <!-- Bill Date -->
+                        <div class="mb-3">
+                            <label for="bill_date" class="form-label">
+                                Bill Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="bill_date" 
+                                   name="bill_date"
+                                   value="{{ today }}"
+                                   required>
+                        </div>
+                        
+                        <!-- Due Date -->
+                        <div class="mb-3">
+                            <label for="due_date" class="form-label">
+                                Due Date
+                            </label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="due_date" 
+                                   name="due_date">
+                            <small class="text-muted">Optional - Payment deadline</small>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="bill_desc" class="form-label">
+                                Description
+                            </label>
+                            <textarea class="form-control" 
+                                      id="bill_desc" 
+                                      name="bill_desc" 
+                                      rows="3"
+                                      placeholder="Bill description or notes"></textarea>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Create Bill
+                            </button>
+                            <a href="{{ url_for('bill.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-calculate due date (30 days from bill date)
+document.getElementById('bill_date').addEventListener('change', function() {
+    var billDate = new Date(this.value);
+    var dueDate = new Date(billDate);
+    dueDate.setDate(dueDate.getDate() + 30);
+    
+    var dueDateString = dueDate.toISOString().split('T')[0];
+    document.getElementById('due_date').value = dueDateString;
+});
+</script>
+{% endblock %}

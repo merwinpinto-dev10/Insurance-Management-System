@@ -1,0 +1,786 @@
+/* ============================================
+   Insurance Management System - Custom Styles
+   Complete CSS Framework with Dark/Light Mode
+   ============================================ */
+
+/* ============================================
+   1. GLOBAL STYLES & CSS VARIABLES (LIGHT MODE)
+   ============================================ */
+
+:root {
+    /* Color Palette */
+    --primary: #667eea;
+    --primary-dark: #764ba2;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --info: #17a2b8;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    --gradient-danger: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    --gradient-warning: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    --gradient-info: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 12px 36px rgba(0, 0, 0, 0.15);
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* ---- LIGHT MODE THEME TOKENS ---- */
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-navbar: #667eea;
+    /* overridden by gradient */
+    --bg-input: #ffffff;
+    --bg-table-head: #667eea;
+    --bg-modal: #ffffff;
+    --bg-dropdown: #ffffff;
+    --bg-alert: #ffffff;
+
+    --text-body: #212529;
+    --text-muted: #6c757d;
+    --text-label: #495057;
+    --text-input: #212529;
+    --text-th: #ffffff;
+
+    --border-color: #dee2e6;
+    --border-input: #e0e0e0;
+    --border-table: #dee2e6;
+    --border-modal: rgba(0, 0, 0, .2);
+
+    --hover-row: rgba(102, 126, 234, 0.05);
+    --scrollbar-track: #f1f1f1;
+}
+
+/* ============================================
+   DARK MODE THEME TOKENS
+   ============================================ */
+
+body[data-theme="dark"] {
+    --bg-body: #0d1117;
+    --bg-card: #161b22;
+    --bg-navbar: #010409;
+    --bg-input: #0d1117;
+    --bg-table-head: #161b22;
+    --bg-modal: #161b22;
+    --bg-dropdown: #161b22;
+    --bg-alert: #161b22;
+
+    --text-body: #c9d1d9;
+    --text-muted: #8b949e;
+    --text-label: #8b949e;
+    --text-input: #c9d1d9;
+    --text-th: #c9d1d9;
+
+    --border-color: #30363d;
+    --border-input: #30363d;
+    --border-table: #30363d;
+    --border-modal: #30363d;
+
+    --hover-row: rgba(200, 210, 220, 0.06);
+    --scrollbar-track: #161b22;
+
+    /* Darker version of gradients for dark mode */
+    --gradient-primary: linear-gradient(135deg, #3d5a99 0%, #5a3580 100%);
+    --gradient-success: linear-gradient(135deg, #1a6b34 0%, #15855e 100%);
+    --gradient-danger: linear-gradient(135deg, #8b1a1a 0%, #7a1728 100%);
+    --gradient-warning: linear-gradient(135deg, #8a6500 0%, #8a5200 100%);
+    --gradient-info: linear-gradient(135deg, #0d5f70 0%, #0a5060 100%);
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-xl: 0 12px 36px rgba(0, 0, 0, 0.7);
+}
+
+/* ============================================
+   SMOOTH THEME TRANSITIONS
+   ============================================ */
+
+body,
+.card,
+.card-header,
+.card-body,
+.card-footer,
+.navbar,
+.dropdown-menu,
+.dropdown-item,
+.modal-content,
+.modal-header,
+.modal-body,
+.modal-footer,
+.table,
+.table thead,
+.table tbody,
+.table tfoot,
+.table th,
+.table td,
+.form-control,
+.form-select,
+.input-group-text,
+.alert,
+.list-group-item,
+.btn,
+.badge {
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* ============================================
+   BASE - BODY
+   ============================================ */
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-body);
+    line-height: 1.6;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+::selection {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* ============================================
+   2. CARDS
+   ============================================ */
+
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal), background-color 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+    background: var(--bg-card);
+    color: var(--text-body);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    background-color: var(--bg-card);
+    color: var(--text-body);
+}
+
+.card-body {
+    padding: 1.5rem;
+    background-color: var(--bg-card);
+    color: var(--text-body);
+}
+
+.card-footer {
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-body);
+}
+
+.hover-card {
+    transition: all var(--transition-normal);
+}
+
+.hover-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-xl);
+}
+
+/* Stat cards with gradient keep gradient on both themes */
+.card.bg-gradient-primary,
+.card.bg-gradient-success,
+.card.bg-gradient-danger,
+.card.bg-gradient-info,
+.card.bg-gradient-warning {
+    border: none;
+    color: #fff !important;
+}
+
+body[data-theme="dark"] .card.bg-gradient-primary {
+    background: var(--gradient-primary) !important;
+}
+
+body[data-theme="dark"] .card.bg-gradient-success {
+    background: var(--gradient-success) !important;
+}
+
+body[data-theme="dark"] .card.bg-gradient-danger {
+    background: var(--gradient-danger) !important;
+}
+
+body[data-theme="dark"] .card.bg-gradient-warning {
+    background: var(--gradient-warning) !important;
+}
+
+body[data-theme="dark"] .card.bg-gradient-info {
+    background: var(--gradient-info) !important;
+}
+
+/* ============================================
+   3. BUTTONS
+   ============================================ */
+
+.btn {
+    border-radius: var(--radius-md);
+    padding: 0.625rem 1.25rem;
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: #fff;
+}
+
+.btn-success {
+    background: var(--gradient-success);
+    color: #fff;
+}
+
+.btn-danger {
+    background: var(--gradient-danger);
+    color: #fff;
+}
+
+.btn-warning {
+    background: var(--gradient-warning);
+    color: #fff;
+}
+
+.btn-info {
+    background: var(--gradient-info);
+    color: #fff;
+}
+
+/* Outline buttons in dark mode */
+body[data-theme="dark"] .btn-outline-primary {
+    color: #79a8ff;
+    border-color: #79a8ff;
+}
+
+body[data-theme="dark"] .btn-outline-secondary {
+    color: #8b949e;
+    border-color: #8b949e;
+}
+
+body[data-theme="dark"] .btn-outline-danger {
+    color: #f86b6b;
+    border-color: #f86b6b;
+}
+
+/* btn-link (used in theme toggle) */
+.theme-toggle-btn {
+    font-size: 1.25rem;
+    padding: 0.25rem 0.5rem;
+    line-height: 1;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.2);
+    color: #ffffff;
+}
+
+/* ============================================
+   4. TABLES
+   ============================================ */
+
+.table-responsive {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.table {
+    color: var(--text-body);
+    border-color: var(--border-table);
+}
+
+.table thead {
+    background: var(--gradient-primary);
+    color: var(--text-th);
+}
+
+body[data-theme="dark"] .table thead {
+    background: var(--bg-table-head);
+    color: var(--text-th);
+}
+
+.table thead th {
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
+
+.table tbody tr {
+    transition: background-color var(--transition-fast);
+    background-color: var(--bg-card);
+    color: var(--text-body);
+}
+
+.table tbody tr:hover {
+    background-color: var(--hover-row);
+}
+
+.table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-color: var(--border-table);
+}
+
+body[data-theme="dark"] .table-striped>tbody>tr:nth-of-type(odd)>* {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: var(--text-body);
+}
+
+body[data-theme="dark"] .table-bordered> :not(caption)>*>* {
+    border-color: var(--border-table);
+}
+
+/* ============================================
+   5. FORMS
+   ============================================ */
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-label);
+}
+
+.form-control,
+.form-select {
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-input);
+    padding: 0.625rem 1rem;
+    transition: all var(--transition-fast);
+    background-color: var(--bg-input);
+    color: var(--text-input);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+    outline: none;
+    background-color: var(--bg-input);
+    color: var(--text-input);
+}
+
+.form-control:hover,
+.form-select:hover {
+    border-color: var(--primary);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.input-group-text {
+    background-color: var(--bg-input);
+    color: var(--text-label);
+    border-color: var(--border-input);
+}
+
+body[data-theme="dark"] .form-check-input {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+}
+
+body[data-theme="dark"] .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* ============================================
+   6. NAVIGATION
+   ============================================ */
+
+.navbar {
+    box-shadow: var(--shadow-md);
+    padding: 1rem 0;
+    background: var(--gradient-primary);
+}
+
+body[data-theme="dark"] .navbar {
+    background: var(--bg-navbar) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+body[data-theme="dark"] .navbar.bg-gradient-primary {
+    background: var(--bg-navbar) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+}
+
+/* Dropdown menus */
+.dropdown-menu {
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-dropdown);
+    color: var(--text-body);
+}
+
+.dropdown-item {
+    padding: 0.625rem 1.25rem;
+    transition: all var(--transition-fast);
+    color: var(--text-body);
+    background-color: transparent;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(102, 126, 234, 0.1);
+    color: var(--primary);
+}
+
+body[data-theme="dark"] .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    color: #79a8ff;
+}
+
+.dropdown-divider {
+    border-color: var(--border-color);
+}
+
+/* ============================================
+   7. BADGES
+   ============================================ */
+
+.badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   8. ALERTS
+   ============================================ */
+
+.alert {
+    border-radius: var(--radius-lg);
+    border: none;
+    padding: 1rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+    animation: slideIn 0.3s ease;
+}
+
+body[data-theme="dark"] .alert-success {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #6fde8d;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+body[data-theme="dark"] .alert-danger {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #f77;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+body[data-theme="dark"] .alert-warning {
+    background-color: rgba(255, 193, 7, 0.12);
+    color: #ffe066;
+    border: 1px solid rgba(255, 193, 7, 0.25);
+}
+
+body[data-theme="dark"] .alert-info {
+    background-color: rgba(23, 162, 184, 0.12);
+    color: #56d4e8;
+    border: 1px solid rgba(23, 162, 184, 0.25);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   9. MODALS
+   ============================================ */
+
+.modal-content {
+    background-color: var(--bg-modal);
+    color: var(--text-body);
+    border: 1px solid var(--border-modal);
+}
+
+.modal-header {
+    background-color: var(--bg-modal);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-body);
+}
+
+.modal-body {
+    background-color: var(--bg-modal);
+    color: var(--text-body);
+}
+
+.modal-footer {
+    background-color: var(--bg-modal);
+    border-top: 1px solid var(--border-color);
+}
+
+body[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+body[data-theme="dark"] .modal-backdrop {
+    background-color: #000;
+}
+
+/* ============================================
+   10. LIST GROUP
+   ============================================ */
+
+.list-group-item {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-body);
+}
+
+.list-group-item:hover {
+    background-color: var(--hover-row);
+}
+
+/* ============================================
+   11. SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* ============================================
+   12. UTILITIES / GRADIENT CLASSES
+   ============================================ */
+
+.bg-gradient-primary {
+    background: var(--gradient-primary) !important;
+}
+
+.bg-gradient-success {
+    background: var(--gradient-success) !important;
+}
+
+.bg-gradient-danger {
+    background: var(--gradient-danger) !important;
+}
+
+.bg-gradient-warning {
+    background: var(--gradient-warning) !important;
+}
+
+.bg-gradient-info {
+    background: var(--gradient-info) !important;
+}
+
+/* Text muted in dark mode */
+body[data-theme="dark"] .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* hr in dark mode */
+body[data-theme="dark"] hr {
+    border-color: var(--border-color);
+    opacity: 1;
+}
+
+/* ============================================
+   13. LOGIN / AUTH PAGE GRADIENT
+   ============================================ */
+
+.login-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+body[data-theme="dark"] .login-bg {
+    background: linear-gradient(135deg, #1a1f3a 0%, #1e1030 100%);
+}
+
+/* ============================================
+   14. DASHBOARD STAT CARDS (dark overrides)
+   ============================================ */
+
+body[data-theme="dark"] .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-body);
+}
+
+body[data-theme="dark"] .stat-card .text-white {
+    color: var(--text-body) !important;
+}
+
+body[data-theme="dark"] .stat-card .card-body {
+    color: var(--text-body);
+}
+
+/* ============================================
+   15. ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease;
+}
+
+/* ============================================
+   16. PRINT STYLES
+   ============================================ */
+
+@media print {
+
+    .navbar,
+    .btn,
+    .d-print-none {
+        display: none !important;
+    }
+
+    .card {
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+    }
+}
+
+/* ============================================
+   17. RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* ============================================
+   18. DASHBOARD STAT CARDS (clickable)
+   ============================================ */
+
+.stat-card {
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
+    filter: brightness(1.08);
+}
+
+a:has(.stat-card) {
+    display: block;
+}

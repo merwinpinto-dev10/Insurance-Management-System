@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Insurance - Insurance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Insurance Policy</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('insurance.edit', id=insurance.ins_id) }}">
+                        <div class="mb-3">
+                            <label for="ins_cus_id" class="form-label">Customer <span class="text-danger">*</span></label>
+                            <select class="form-select" id="ins_cus_id" name="ins_cus_id" required>
+                                {% for customer in customers %}
+                                <option value="{{ customer.cus_id }}" {% if customer.cus_id == insurance.ins_cus_id %}selected{% endif %}>
+                                    {{ customer.cus_name }} ({{ customer.cus_mobile }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="ins_type" class="form-label">Insurance Type <span class="text-danger">*</span></label>
+                            <select class="form-select" id="ins_type" name="ins_type" required>
+                                <option value="Life Insurance" {% if insurance.ins_type == 'Life Insurance' %}selected{% endif %}>Life Insurance</option>
+                                <option value="Health Insurance" {% if insurance.ins_type == 'Health Insurance' %}selected{% endif %}>Health Insurance</option>
+                                <option value="Vehicle Insurance" {% if insurance.ins_type == 'Vehicle Insurance' %}selected{% endif %}>Vehicle Insurance</option>
+                                <option value="Home Insurance" {% if insurance.ins_type == 'Home Insurance' %}selected{% endif %}>Home Insurance</option>
+                                <option value="Travel Insurance" {% if insurance.ins_type == 'Travel Insurance' %}selected{% endif %}>Travel Insurance</option>
+                                <option value="Business Insurance" {% if insurance.ins_type == 'Business Insurance' %}selected{% endif %}>Business Insurance</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="ins_num" class="form-label">Policy Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="ins_num" name="ins_num" value="{{ insurance.ins_num }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="ins_amt" class="form-label">Insurance Amount (₹) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="ins_amt" name="ins_amt" step="0.01" value="{{ insurance.ins_amt }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="ins_date" class="form-label">Issue Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="ins_date" name="ins_date" value="{{ insurance.ins_date.strftime('%Y-%m-%d') if insurance.ins_date else '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="expiry_date" class="form-label">Expiry Date</label>
+                            <input type="date" class="form-control" id="expiry_date" name="expiry_date" value="{{ insurance.expiry_date.strftime('%Y-%m-%d') if insurance.expiry_date else '' }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="ins_status" class="form-label">Status</label>
+                            <select class="form-select" id="ins_status" name="ins_status">
+                                <option value="Active" {% if insurance.ins_status == 'Active' %}selected{% endif %}>Active</option>
+                                <option value="Expired" {% if insurance.ins_status == 'Expired' %}selected{% endif %}>Expired</option>
+                                <option value="Cancelled" {% if insurance.ins_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-2"></i>Update Insurance
+                            </button>
+                            <a href="{{ url_for('insurance.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

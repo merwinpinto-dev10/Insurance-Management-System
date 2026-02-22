@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Bill Management - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container-fluid mt-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-file-invoice me-2"></i>Bill Management</h1>
+        <a href="{{ url_for('bill.add') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Create New Bill
+        </a>
+    </div>
+    
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h3>{{ bills|selectattr('bill_status', 'equalto', 'Pending')|list|length }}</h3>
+                    <p class="mb-0">Pending Bills</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h3>{{ bills|selectattr('bill_status', 'equalto', 'Paid')|list|length }}</h3>
+                    <p class="mb-0">Paid Bills</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body text-center">
+                    <h3>{{ bills|selectattr('bill_status', 'equalto', 'Overdue')|list|length }}</h3>
+                    <p class="mb-0">Overdue Bills</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h3>₹{{ "%.2f"|format(bills|map(attribute='bill_amount')|sum) if bills else 0 }}</h3>
+                    <p class="mb-0">Total Amount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bills Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-list me-2"></i>All Bills ({{ bills|length }})</h5>
+        </div>
+        <div class="card-body">
+            {% if bills %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Bill Number</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Bill Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in bills %}
+                        <tr>
+                            <td><strong>{{ bill.bill_num }}</strong></td>
+                            <td>{{ bill.customer.cus_name if bill.customer else 'N/A' }}</td>
+                            <td><strong>₹{{ "%.2f"|format(bill.bill_amount) }}</strong></td>
+                            <td>{{ bill.bill_date.strftime('%Y-%m-%d') if bill.bill_date else 'N/A' }}</td>
+                            <td>{{ bill.due_date.strftime('%Y-%m-%d') if bill.due_date else 'N/A' }}</td>
+                            <td>
+                                {% if bill.bill_status == 'Paid' %}
+                                    <span class="badge bg-success">Paid</span>
+                                {% elif bill.bill_status == 'Overdue' %}
+                                    <span class="badge bg-danger">Overdue</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('bill.edit', id=bill.bill_id) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="POST" action="{{ url_for('bill.delete', id=bill.bill_id) }}" style="display:inline;" onsubmit="return confirm('Delete this bill?');">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-file-invoice fa-4x text-muted mb-3"></i>
+                <h4>No Bills Found</h4>
+                <p class="text-muted">Start by creating your first bill!</p>
+                <a href="{{ url_for('bill.add') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Create Bill
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

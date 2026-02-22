@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Management - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container-fluid mt-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">
+                <i class="fas fa-money-bill-wave me-2 text-success"></i>Payment Management
+            </h1>
+            <p class="text-muted mb-0">Track and manage all customer payments</p>
+        </div>
+        <a href="{{ url_for('payment.add') }}" class="btn btn-success btn-lg">
+            <i class="fas fa-plus me-2"></i>Record New Payment
+        </a>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('payment.index') }}" class="row g-3">
+                <div class="col-md-9">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Search by customer name, transaction reference, or payment type..."
+                           value="{{ search_query or '' }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <!-- Total Payments -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-receipt fa-2x mb-2"></i>
+                    <h3 class="mb-1">{{ payments|length }}</h3>
+                    <p class="mb-0">Total Payments</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Total Amount -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-rupee-sign fa-2x mb-2"></i>
+                    <h3 class="mb-1">₹{{ "%.2f"|format(payments|map(attribute='pay_amount')|sum) if payments else 0 }}</h3>
+                    <p class="mb-0">Total Amount Collected</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cash Payments -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-money-bill-wave fa-2x mb-2"></i>
+                    <h3 class="mb-1">{{ payments|selectattr('payment_method', 'equalto', 'Cash')|list|length }}</h3>
+                    <p class="mb-0">Cash Payments</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Online/Bank Transfers -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-university fa-2x mb-2"></i>
+                    <h3 class="mb-1">{{ payments|selectattr('payment_method', 'equalto', 'Bank Transfer')|list|length }}</h3>
+                    <p class="mb-0">Bank Transfers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Payments Table -->
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>All Payment Records ({{ payments|length }})
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            {% if payments %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Reference</th>
+                            <th>Bill</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td><strong>#{{ payment.pay_id }}</strong></td>
+                            <td>
+                                <i class="fas fa-calendar me-1"></i>
+                                {{ payment.pay_date.strftime('%d %b %Y') if payment.pay_date else 'N/A' }}
+                            </td>
+                            <td>
+                                {% if payment.customer %}
+                                    <strong>{{ payment.customer.cus_name }}</strong><br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-phone me-1"></i>{{ payment.customer.cus_mobile }}
+                                    </small>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ payment.pay_type }}</span>
+                            </td>
+                            <td>
+                                <strong class="text-success fs-5">₹{{ "%.2f"|format(payment.pay_amount) }}</strong>
+                            </td>
+                            <td>
+                                {% if payment.payment_method %}
+                                    {% if payment.payment_method == 'Cash' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-money-bill-wave me-1"></i>{{ payment.payment_method }}
+                                        </span>
+                                    {% elif payment.payment_method == 'UPI' %}
+                                        <span class="badge bg-primary">
+                                            <i class="fas fa-mobile-alt me-1"></i>{{ payment.payment_method }}
+                                        </span>
+                                    {% elif payment.payment_method == 'Bank Transfer' %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-university me-1"></i>{{ payment.payment_method }}
+                                        </span>
+                                    {% elif payment.payment_method in ['Credit Card', 'Debit Card'] %}
+                                        <span class="badge bg-info">
+                                            <i class="fas fa-credit-card me-1"></i>{{ payment.payment_method }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ payment.payment_method }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">Not specified</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if payment.transaction_ref %}
+                                    <code class="bg-light p-1">{{ payment.transaction_ref }}</code>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if payment.bill %}
+                                    <a href="{{ url_for('bill.edit', id=payment.bill.bill_id) }}" class="text-decoration-none">
+                                        {{ payment.bill.bill_num }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('payment.view', id=payment.pay_id) }}" 
+                                       class="btn btn-sm btn-info" 
+                                       title="View Receipt">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <form method="POST" 
+                                          action="{{ url_for('payment.delete', id=payment.pay_id) }}" 
+                                          style="display:inline;"
+                                          onsubmit="return confirm('Are you sure you want to delete this payment record?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-5">
+                <i class="fas fa-money-bill-wave fa-5x text-muted mb-4"></i>
+                <h4 class="text-muted">No Payments Recorded Yet</h4>
+                <p class="text-muted mb-4">
+                    {% if search_query %}
+                        No payments match your search criteria. Try a different search term.
+                    {% else %}
+                        Start recording payments to track your business transactions.
+                    {% endif %}
+                </p>
+                {% if not search_query %}
+                <a href="{{ url_for('payment.add') }}" class="btn btn-success btn-lg">
+                    <i class="fas fa-plus me-2"></i>Record First Payment
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% if payments %}
+        <div class="card-footer text-muted">
+            <small>
+                <i class="fas fa-info-circle me-1"></i>
+                Showing {{ payments|length }} payment record(s). 
+                Click <i class="fas fa-eye"></i> to view receipt or <i class="fas fa-trash"></i> to delete.
+            </small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

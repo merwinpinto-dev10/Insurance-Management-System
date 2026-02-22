@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}View Customer - {{ customer.cus_name }}{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Customer Details -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2"></i>Customer Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h4>{{ customer.cus_name }}</h4>
+                    <hr>
+                    <p><strong>ID:</strong> {{ customer.cus_id }}</p>
+                    <p>
+                        <strong>Mobile:</strong><br>
+                        <i class="fas fa-phone me-2"></i>{{ customer.cus_mobile }}
+                    </p>
+                    <p>
+                        <strong>Email:</strong><br>
+                        {% if customer.cus_email %}
+                            <i class="fas fa-envelope me-2"></i>{{ customer.cus_email }}
+                        {% else %}
+                            <span class="text-muted">Not provided</span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Address:</strong><br>
+                        {% if customer.cus_add %}
+                            <i class="fas fa-map-marker-alt me-2"></i>{{ customer.cus_add }}
+                        {% else %}
+                            <span class="text-muted">Not provided</span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Status:</strong><br>
+                        {% if customer.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Created:</strong><br>
+                        {{ customer.created_at.strftime('%Y-%m-%d') if customer.created_at else 'N/A' }}
+                    </p>
+                    
+                    <hr>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('customer.edit', id=customer.cus_id) }}" class="btn btn-warning">
+                            <i class="fas fa-edit me-2"></i>Edit Customer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="col-md-8">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="card text-white bg-success">
+                        <div class="card-body text-center">
+                            <h3>{{ insurances|length }}</h3>
+                            <p class="mb-0">Insurance Policies</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body text-center">
+                            <h3>{{ bills|length }}</h3>
+                            <p class="mb-0">Total Bills</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-info">
+                        <div class="card-body text-center">
+                            <h3>{{ payments|length }}</h3>
+                            <p class="mb-0">Payments Made</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Insurance Policies -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>Insurance Policies
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if insurances %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Policy Number</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Expiry</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ins in insurances %}
+                                <tr>
+                                    <td>{{ ins.ins_num }}</td>
+                                    <td>{{ ins.ins_type }}</td>
+                                    <td>₹{{ "%.2f"|format(ins.ins_amt) }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if ins.ins_status == 'Active' else 'secondary' }}">
+                                            {{ ins.ins_status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ ins.expiry_date.strftime('%Y-%m-%d') if ins.expiry_date else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">No insurance policies</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Bills -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-invoice me-2"></i>Bills
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if bills %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Bill Number</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for bill in bills %}
+                                <tr>
+                                    <td>{{ bill.bill_num }}</td>
+                                    <td>₹{{ "%.2f"|format(bill.bill_amount) }}</td>
+                                    <td>{{ bill.bill_date.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ bill.due_date.strftime('%Y-%m-%d') if bill.due_date else 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if bill.bill_status == 'Paid' else 'warning' }}">
+                                            {{ bill.bill_status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">No bills</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Payments -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-money-bill-wave me-2"></i>Payments
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if payments %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Reference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr>
+                                    <td>{{ payment.pay_date.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ payment.pay_type }}</td>
+                                    <td>₹{{ "%.2f"|format(payment.pay_amount) }}</td>
+                                    <td>{{ payment.payment_method or 'N/A' }}</td>
+                                    <td>{{ payment.transaction_ref or 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">No payments</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

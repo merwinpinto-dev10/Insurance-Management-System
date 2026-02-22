@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Receipt #{{ payment.pay_id }} - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            
+            <!-- Payment Receipt Card -->
+            <div class="card shadow-lg border-0">
+                
+                <!-- Receipt Header -->
+                <div class="card-header bg-success text-white py-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1">
+                                <i class="fas fa-receipt me-2"></i>Payment Receipt
+                            </h2>
+                            <p class="mb-0 opacity-75">Official Payment Confirmation</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button onclick="window.print()" class="btn btn-light btn-sm d-print-none">
+                                <i class="fas fa-print me-2"></i>Print
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Receipt Body -->
+                <div class="card-body p-5">
+                    
+                    <!-- Company/System Header -->
+                    <div class="text-center mb-5">
+                        <h1 class="text-primary mb-2">
+                            <i class="fas fa-shield-alt me-2"></i>Insurance Management System
+                        </h1>
+                        <p class="text-muted mb-0">Complete Insurance & Customer Solutions</p>
+                        <hr class="my-3">
+                    </div>
+                    
+                    <!-- Receipt Number and Date -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="border-start border-success border-4 ps-3">
+                                <h6 class="text-muted mb-1">Receipt Number</h6>
+                                <h4 class="mb-0">#{{ "%04d"|format(payment.pay_id) }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="border-end border-success border-4 pe-3">
+                                <h6 class="text-muted mb-1">Payment Date</h6>
+                                <h4 class="mb-0">
+                                    {{ payment.pay_date.strftime('%B %d, %Y') if payment.pay_date else 'N/A' }}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Payment and Customer Details in Two Columns -->
+                    <div class="row mb-4">
+                        
+                        <!-- Payment Information -->
+                        <div class="col-md-6">
+                            <h5 class="text-success mb-3">
+                                <i class="fas fa-money-bill-wave me-2"></i>Payment Information
+                            </h5>
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-muted" width="45%"><strong>Payment ID:</strong></td>
+                                        <td>#{{ payment.pay_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><strong>Payment Type:</strong></td>
+                                        <td><span class="badge bg-info fs-6">{{ payment.pay_type }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><strong>Payment Date:</strong></td>
+                                        <td>{{ payment.pay_date.strftime('%d %B %Y') if payment.pay_date else 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><strong>Payment Method:</strong></td>
+                                        <td>
+                                            {% if payment.payment_method %}
+                                                <span class="badge bg-primary">{{ payment.payment_method }}</span>
+                                            {% else %}
+                                                <span class="text-muted">Not specified</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><strong>Transaction Ref:</strong></td>
+                                        <td>
+                                            {% if payment.transaction_ref %}
+                                                <code class="bg-light p-2 rounded">{{ payment.transaction_ref }}</code>
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Customer Information -->
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-user me-2"></i>Customer Information
+                            </h5>
+                            {% if payment.customer %}
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-muted" width="45%"><strong>Customer Name:</strong></td>
+                                        <td><strong>{{ payment.customer.cus_name }}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><strong>Mobile Number:</strong></td>
+                                        <td>
+                                            <i class="fas fa-phone me-2"></i>{{ payment.customer.cus_mobile }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><strong>Email Address:</strong></td>
+                                        <td>
+                                            {% if payment.customer.cus_email %}
+                                                <i class="fas fa-envelope me-2"></i>{{ payment.customer.cus_email }}
+                                            {% else %}
+                                                <span class="text-muted">Not provided</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted"><strong>Address:</strong></td>
+                                        <td>
+                                            {% if payment.customer.cus_add %}
+                                                {{ payment.customer.cus_add }}
+                                            {% else %}
+                                                <span class="text-muted">Not provided</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Customer information not available
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Amount Section (Prominent Display) -->
+                    <div class="text-center my-5 p-5 bg-light rounded-3 border border-success">
+                        <h6 class="text-muted mb-2 text-uppercase">Amount Paid</h6>
+                        <h1 class="display-1 text-success mb-3 fw-bold">
+                            ₹{{ "%.2f"|format(payment.pay_amount) }}
+                        </h1>
+                        <p class="text-muted mb-0 fs-5">
+                            <em>
+                                (Rupees 
+                                {% set rupees = payment.pay_amount|int %}
+                                {% set paise = ((payment.pay_amount - rupees) * 100)|int %}
+                                {{ rupees }}
+                                {% if paise > 0 %}
+                                    and {{ paise }} Paise
+                                {% endif %}
+                                Only)
+                            </em>
+                        </p>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Bill Information (If Linked) -->
+                    {% if payment.bill %}
+                    <div class="mb-4">
+                        <h5 class="text-warning mb-3">
+                            <i class="fas fa-file-invoice me-2"></i>Linked Bill Information
+                        </h5>
+                        <div class="alert alert-warning mb-0">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Bill Number:</strong> 
+                                        <span class="badge bg-dark">{{ payment.bill.bill_num }}</span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Bill Amount:</strong> 
+                                        ₹{{ "%.2f"|format(payment.bill.bill_amount) }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Bill Date:</strong> 
+                                        {{ payment.bill.bill_date.strftime('%d %b %Y') if payment.bill.bill_date else 'N/A' }}
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Bill Status:</strong> 
+                                        <span class="badge bg-{{ 'success' if payment.bill.bill_status == 'Paid' else 'warning' }}">
+                                            {{ payment.bill.bill_status }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    {% endif %}
+                    
+                    <!-- Payment Description/Notes -->
+                    {% if payment.pay_desc %}
+                    <div class="mb-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-sticky-note me-2"></i>Payment Notes / Description
+                        </h5>
+                        <div class="p-4 bg-light rounded border">
+                            <p class="mb-0">{{ payment.pay_desc }}</p>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    {% endif %}
+                    
+                    <!-- Footer Information -->
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <p class="text-muted small mb-1">
+                                <i class="fas fa-clock me-2"></i>
+                                <strong>Receipt Generated:</strong><br>
+                                {{ payment.created_at.strftime('%B %d, %Y at %I:%M %p') if payment.created_at else 'N/A' }}
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="border-top border-dark pt-3 mt-3" style="width: 200px; float: right;">
+                                <p class="mb-0 small text-muted">Authorized Signature</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Receipt Footer -->
+                <div class="card-footer bg-light text-center py-3">
+                    <p class="mb-0 text-muted">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <strong>This is a computer-generated receipt and does not require a physical signature.</strong>
+                    </p>
+                    <p class="mb-0 text-muted small mt-2">
+                        For any queries, please contact our support team.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Action Buttons (Hidden when printing) -->
+            <div class="text-center mt-4 d-print-none">
+                <button onclick="window.print()" class="btn btn-success btn-lg me-2">
+                    <i class="fas fa-print me-2"></i>Print Receipt
+                </button>
+                <a href="{{ url_for('payment.index') }}" class="btn btn-primary btn-lg me-2">
+                    <i class="fas fa-list me-2"></i>All Payments
+                </a>
+                {% if payment.customer %}
+                <a href="{{ url_for('customer.view', id=payment.customer.cus_id) }}" class="btn btn-info btn-lg">
+                    <i class="fas fa-user me-2"></i>View Customer
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print-Specific Styles -->
+<style>
+@media print {
+    /* Hide everything except the receipt */
+    body * {
+        visibility: hidden;
+    }
+    
+    .card, .card * {
+        visibility: visible;
+    }
+    
+    .card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    /* Hide print buttons and navigation */
+    .d-print-none {
+        display: none !important;
+    }
+    
+    /* Adjust colors for print */
+    .bg-success, .bg-primary, .bg-warning {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    /* Page breaks */
+    .card {
+        page-break-inside: avoid;
+    }
+    
+    /* Remove shadows and borders that don't print well */
+    .shadow, .shadow-lg {
+        box-shadow: none !important;
+    }
+}
+
+/* Additional styling for better appearance */
+.border-success.border-4 {
+    border-width: 4px !important;
+}
+</style>
+{% endblock %}

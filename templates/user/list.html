@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container-fluid mt-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">
+                <i class="fas fa-users-cog me-2 text-primary"></i>User Management
+            </h1>
+            <p class="text-muted mb-0">Manage system users and access control</p>
+        </div>
+        <a href="{{ url_for('user.add') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-user-plus me-2"></i>Add New User
+        </a>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('user.index') }}" class="row g-3">
+                <div class="col-md-9">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Search by name, email, or username..."
+                           value="{{ search_query or '' }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <!-- Total Users -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-2x mb-2"></i>
+                    <h3 class="mb-1">{{ users|length }}</h3>
+                    <p class="mb-0">Total Users</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Active Users -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-check fa-2x mb-2"></i>
+                    <h3 class="mb-1">{{ users|selectattr('login.is_active', 'equalto', True)|list|length if users else 0 }}</h3>
+                    <p class="mb-0">Active Users</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admins -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-shield fa-2x mb-2"></i>
+                    <h3 class="mb-1">
+                        {{ users|selectattr('login.role.role_name', 'equalto', 'Admin')|list|length if users else 0 }}
+                    </h3>
+                    <p class="mb-0">Administrators</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Managers -->
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-tie fa-2x mb-2"></i>
+                    <h3 class="mb-1">
+                        {{ users|selectattr('login.role.role_name', 'equalto', 'Manager')|list|length if users else 0 }}
+                    </h3>
+                    <p class="mb-0">Managers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>All System Users ({{ users|length }})
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            {% if users %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td><strong>#{{ user.user_id }}</strong></td>
+                            <td>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <strong>{{ user.login.login_username if user.login else 'N/A' }}</strong>
+                            </td>
+                            <td>{{ user.user_name }}</td>
+                            <td>
+                                {% if user.user_email %}
+                                    <i class="fas fa-envelope me-1"></i>{{ user.user_email }}
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <i class="fas fa-phone me-1"></i>{{ user.user_mobile }}
+                            </td>
+                            <td>
+                                {% if user.login and user.login.role %}
+                                    {% if user.login.role.role_name == 'Admin' %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-user-shield me-1"></i>{{ user.login.role.role_name }}
+                                        </span>
+                                    {% elif user.login.role.role_name == 'Manager' %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-user-tie me-1"></i>{{ user.login.role.role_name }}
+                                        </span>
+                                    {% elif user.login.role.role_name == 'Agent' %}
+                                        <span class="badge bg-info">
+                                            <i class="fas fa-user-tag me-1"></i>{{ user.login.role.role_name }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ user.login.role.role_name }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.login and user.login.is_active %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i>Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-times-circle me-1"></i>Inactive
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.login and user.login.last_login %}
+                                    <small>{{ user.login.last_login.strftime('%d %b %Y') }}</small>
+                                {% else %}
+                                    <span class="text-muted">Never</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('user.edit', id=user.user_id) }}" 
+                                       class="btn btn-sm btn-warning" 
+                                       title="Edit User">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="POST" 
+                                          action="{{ url_for('user.delete', id=user.user_id) }}" 
+                                          style="display:inline;"
+                                          onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-5">
+                <i class="fas fa-users-cog fa-5x text-muted mb-4"></i>
+                <h4 class="text-muted">No Users Found</h4>
+                <p class="text-muted mb-4">
+                    {% if search_query %}
+                        No users match your search criteria.
+                    {% else %}
+                        Start by adding your first system user.
+                    {% endif %}
+                </p>
+                {% if not search_query %}
+                <a href="{{ url_for('user.add') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Add First User
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% if users %}
+        <div class="card-footer text-muted">
+            <small>
+                <i class="fas fa-info-circle me-1"></i>
+                Showing {{ users|length }} user(s). 
+                Click <i class="fas fa-edit"></i> to edit or <i class="fas fa-trash"></i> to delete.
+            </small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

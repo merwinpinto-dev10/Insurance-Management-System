@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Insurance Management System{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block extra_css %}{% endblock %}
+
+    <!-- Anti-flash theme loader: runs BEFORE page renders -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('theme');
+                var theme = saved ? JSON.parse(saved) : (
+                    window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                        ? 'dark' : 'light'
+                );
+                document.documentElement.setAttribute('data-theme', theme);
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.body.setAttribute('data-theme', theme);
+                    var btn = document.getElementById('theme-toggle');
+                    if (btn) {
+                        btn.innerHTML = theme === 'dark' ? '&#9728;&#65039;' : '&#127769;';
+                        btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+                    }
+                });
+            } catch (e) { }
+        })();
+    </script>
+</head>
+
+<body>
+    {% block body %}
+
+    {% if current_user.is_authenticated %}
+    <!-- Shared Navbar (shown on all pages except login) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+                <i class="fas fa-shield-alt me-2"></i>{{ app_name or 'Insurance System' }}
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard.index') }}">
+                            <i class="fas fa-home me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('customer.index') }}">
+                            <i class="fas fa-users me-1"></i>Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('insurance.index') }}">
+                            <i class="fas fa-shield-alt me-1"></i>Insurance
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('bill.index') }}">
+                            <i class="fas fa-file-invoice me-1"></i>Bills
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('payment.index') }}">
+                            <i class="fas fa-money-bill-wave me-1"></i>Payments
+                        </a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav">
+                    <!-- 🌙 / ☀️ Theme Toggle -->
+                    <li class="nav-item d-flex align-items-center me-1">
+                        <button id="theme-toggle" class="btn btn-link theme-toggle-btn" aria-label="Switch to dark mode"
+                            title="Toggle Dark/Light Mode">
+                            🌙
+                        </button>
+                    </li>
+                    <!-- User Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>{{ session.get('user_name', 'User') }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}">
+                                    <i class="fas fa-key me-2"></i>Change Password
+                                </a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% else %}
+    <!-- Floating theme toggle for login page -->
+    <div style="position:fixed;top:1rem;right:1rem;z-index:9999;">
+        <button id="theme-toggle" class="btn btn-sm theme-toggle-btn"
+            style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:50%;width:42px;height:42px;font-size:1.2rem;line-height:1;"
+            aria-label="Switch to dark mode" title="Toggle Dark/Light Mode">
+            🌙
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
+            role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
+    {% endblock %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

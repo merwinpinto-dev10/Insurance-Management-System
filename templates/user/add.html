@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Add User - Insurance System{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <!-- Page Title -->
+            <div class="text-center mb-4">
+                <h2><i class="fas fa-user-plus me-2 text-primary"></i>Add New System User</h2>
+                <p class="text-muted">Create a new user account with login credentials</p>
+            </div>
+            
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-circle me-2"></i>User Information
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('user.add') }}">
+                        
+                        <!-- Personal Information Section -->
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-id-card me-2"></i>Personal Information
+                        </h6>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="user_name" class="form-label fw-bold">
+                                    <i class="fas fa-user me-2"></i>Full Name 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="user_name" 
+                                       name="user_name"
+                                       placeholder="Enter full name"
+                                       required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="user_mobile" class="form-label fw-bold">
+                                    <i class="fas fa-phone me-2"></i>Mobile Number 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="tel" 
+                                       class="form-control" 
+                                       id="user_mobile" 
+                                       name="user_mobile"
+                                       pattern="[0-9]{10}"
+                                       maxlength="10"
+                                       placeholder="10 digit mobile number"
+                                       required>
+                                <small class="text-muted">Enter 10 digit mobile number</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label for="user_email" class="form-label fw-bold">
+                                    <i class="fas fa-envelope me-2"></i>Email Address 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="email" 
+                                       class="form-control" 
+                                       id="user_email" 
+                                       name="user_email"
+                                       placeholder="user@example.com"
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label for="user_address" class="form-label fw-bold">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Address
+                                </label>
+                                <textarea class="form-control" 
+                                          id="user_address" 
+                                          name="user_address" 
+                                          rows="3"
+                                          placeholder="Enter full address (optional)"></textarea>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Login Credentials Section -->
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-key me-2"></i>Login Credentials
+                        </h6>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="login_username" class="form-label fw-bold">
+                                    <i class="fas fa-user-circle me-2"></i>Username 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="login_username" 
+                                       name="login_username"
+                                       placeholder="Choose a username"
+                                       minlength="4"
+                                       required>
+                                <small class="text-muted">Minimum 4 characters, unique username</small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="user_password" class="form-label fw-bold">
+                                    <i class="fas fa-lock me-2"></i>Password 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="user_password" 
+                                       name="user_password"
+                                       placeholder="Enter password"
+                                       minlength="6"
+                                       required>
+                                <small class="text-muted">Minimum 6 characters</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="login_role_id" class="form-label fw-bold">
+                                    <i class="fas fa-user-tag me-2"></i>User Role 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="login_role_id" name="login_role_id" required>
+                                    <option value="">-- Select Role --</option>
+                                    {% for role in roles %}
+                                    <option value="{{ role.role_id }}">
+                                        {{ role.role_name }}
+                                        {% if role.role_desc %} - {{ role.role_desc }}{% endif %}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">Assign appropriate role for access control</small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="is_active" class="form-label fw-bold">
+                                    <i class="fas fa-toggle-on me-2"></i>Account Status
+                                </label>
+                                <select class="form-select" id="is_active" name="is_active">
+                                    <option value="1" selected>Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                                <small class="text-muted">Set account status</small>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Role Description Display -->
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-info-circle me-2"></i>Role Information
+                            </h6>
+                            <p class="mb-0">
+                                <strong>Admin:</strong> Full system access, can manage all modules<br>
+                                <strong>Manager:</strong> Can view and manage customers, insurance, bills<br>
+                                <strong>Agent:</strong> Can add and view customer information<br>
+                                <strong>Accountant:</strong> Can manage bills and payments<br>
+                                <strong>Viewer:</strong> Read-only access to all modules
+                            </p>
+                        </div>
+                        
+                        <!-- Form Buttons -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save me-2"></i>Create User Account
+                                    </button>
+                                    <a href="{{ url_for('user.index') }}" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-times me-2"></i>Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer bg-light">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                <strong>Security Note:</strong> The password will be securely encrypted before storage. 
+                                User will be able to change their password after first login.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for UX enhancements -->
+<script>
+// Auto-generate username from name
+document.getElementById('user_name').addEventListener('blur', function() {
+    var name = this.value.trim();
+    var usernameField = document.getElementById('login_username');
+    
+    if (name && !usernameField.value) {
+        // Generate username from name (first name + last initial)
+        var nameParts = name.toLowerCase().split(' ');
+        var username = nameParts[0];
+        if (nameParts.length > 1) {
+            username += nameParts[nameParts.length - 1].charAt(0);
+        }
+        usernameField.value = username.replace(/[^a-z0-9]/g, '');
+    }
+});
+
+// Validate mobile number
+document.getElementById('user_mobile').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+</script>
+{% endblock %}
